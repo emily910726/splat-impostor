@@ -4,11 +4,10 @@
 node js and npm
 
 ## How to start the bot
-1. create a bot following the [guide](https://www.ionos.com/digitalguide/server/know-how/creating-discord-bot/)
-2. Invite the bot to your server via the generated URL
-3. Download the code
-4. In the .env file, paste your token in
-5. Run the program with `npm start`
+1. Invite the bot to your server https://discord.com/api/oauth2/authorize?client_id=1150337017947885608&permissions=8&scope=bot%20applications.commands
+2. Download the code
+3. In the .env file, paste your token in
+4. Run the program with `npm start`
 
 ## How does the bot work
 1. `!create` to create a room
