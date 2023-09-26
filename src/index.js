@@ -1,5 +1,6 @@
 import { Client, IntentsBitField } from "discord.js";
 import dotenv from "dotenv";
+import imageProcessor from './service/imageProcessingService.js'
 dotenv.config();
 
 /**
@@ -56,7 +57,7 @@ const playerType = {
     CALCULATING: 'Calculating...'
 }
 
-client.on("messageCreate", (message) => {
+client.on("messageCreate", async (message) => {
     /* this validation disallows bots from responding to each other/themselves, remove at your own risk 💀 */
     if (message.author.bot) return;
 
@@ -71,6 +72,10 @@ client.on("messageCreate", (message) => {
     // message.reply('hello too', { ephemeral: true });
 
     let command = message.content.toLowerCase()
+    if(command.startsWith('test')) {
+        const img = await imageProcessor.renderCard(Array.from({length: 8}, () => Math.floor(Math.random() * 101)))
+        message.reply({files: [{attachment: img}]})
+    }
     if (command.startsWith('!create')) {
         getRoom(message.channelId, [status.ENDED], (room) => {
             state[message.channelId] = {
