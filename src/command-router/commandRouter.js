@@ -5,19 +5,16 @@ function route(message, commands, client) {
 
     switch(handlerKey) {
         case 'create': 
-            roomService.createRoom(message, commands)
+            roomService.createRoom(message, rest)
             break
-        case 'joina':
-            roomService.joinRoom(message, commands)
-            break
-        case 'joinb':
-            roomService.joinRoom(message, commands)
+        case 'join':
+            roomService.joinRoom(message, rest)
             break
         case 'start':
-            roomService.startRoom(message, commands, client)
+            roomService.startRoom(message, rest, client)
             break
         case 'end':
-            roomService.endRoom(message, commands)
+            roomService.endRoom(message, rest)
             break
     }
 }

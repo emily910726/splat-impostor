@@ -42,7 +42,6 @@ const client = new Client({
 
 client.on("ready", (bot) => {
     console.log(`✅ ${bot.options.rest.authPrefix} ${bot.user.tag} is online! Listening to channels:`)
-    console.log(JSON.stringify(bot.channels))
 })
 
 client.on("messageCreate", async (message) => {
