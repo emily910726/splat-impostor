@@ -16,6 +16,10 @@ function route(message, commands, client) {
         case 'end':
             roomService.endRoom(message, rest)
             break
+        case 'test':
+            roomService.test(message, rest, client)
+            break
+        // todo: default manual
     }
 }
 

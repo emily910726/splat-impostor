@@ -17,13 +17,20 @@ const teams = {
     BLUE: 'right'
 }
 
+const mode = {
+    VERSUS: 'versus',
+    IMPOSTOR: 'impostor',
+    NONE: 'none'
+}
+
 function create(key) {
     rooms[key] = {
         status: status.CREATED,
         teams: {
             left: {},
             right: {}
-        }
+        },
+        mode: mode.NONE
     }
 }
 
@@ -33,7 +40,8 @@ function clearAndSetStatus(key, state) {
         teams: {
             left: {},
             right: {}
-        }
+        },
+        mode: mode.NONE
     }
 }
 
@@ -42,6 +50,7 @@ export default {
     status,
     playerType,
     teams,
+    mode,
     create,
     clearAndSetStatus
 }

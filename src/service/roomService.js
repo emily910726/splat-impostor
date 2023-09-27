@@ -1,5 +1,6 @@
 import roomStore from '../store/rooms.js'
 import imageProcessor from './imageProcessingService.js'
+import randomiser from './RandomiserService.js'
 
 function getRoom(channelId, status, next, noMatch, notFound) {
     let room = roomStore.rooms[channelId]
@@ -8,17 +9,6 @@ function getRoom(channelId, status, next, noMatch, notFound) {
         else noMatch(room)
     }
     else notFound()
-}
-
-function randomisePlayers(players) {
-    const members = Object.keys(players)
-    if (members.length <= 0) return
-
-    const impostorIndex = Math.floor(Math.random() * members.length)
-    for (const userId in players) {
-        players[userId].type = roomStore.playerType.PLAYER
-    }
-    players[members[impostorIndex]].type = roomStore.playerType.IMPOSTOR
 }
 
 function createRoom(message, commands) {
@@ -70,23 +60,54 @@ function joinRoom(message, commands) {
 
 function startRoom(message, commands, client) {
     getRoom(message.channelId, [roomStore.status.CREATED], async (room) => {
+        let mode = roomStore.mode.IMPOSTOR
+        let isRandom = false
+        let randomisationMode = randomiser.mode.WILD
+        if (commands.length > 0) {
+            if (commands[0] == 'vs') mode = roomStore.mode.VERSUS
+        }
+        if (commands.length > 1) {
+            if (commands[1] == 'random') isRandom = true
+        }
+        if (commands.length > 2) {
+            switch (commands[2]) {
+                case 'strict': 
+                    randomisationMode = randomiser.mode.X_STRICT
+                    break
+                case 'lax': 
+                    randomisationMode = randomiser.mode.X_LAX
+                    break
+                case 'class': 
+                    randomisationMode = randomiser.mode.CLASS
+                    break
+            }
+        }
+
         room.status = roomStore.status.STARTED
+        room.mode = mode
 
-        randomisePlayers(room.teams.left)
-        randomisePlayers(room.teams.right)
-        for (const userId in room.teams.left) {
-            const user = client.users.fetch(userId).then((user) => {
-                user.send(`You are ${room.teams.left[userId].type}`)
-            })
-        }
-        for (const userId in room.teams.right) {
-            const user = client.users.fetch(userId).then((user) => {
-                user.send(`You are ${room.teams.right[userId].type}`)
-            })
+        if (mode == roomStore.mode.IMPOSTOR) {
+            randomiser.randomiseImpostor(room.teams)
+            for (const userId in room.teams.left) {
+                const user = client.users.fetch(userId).then((user) => {
+                    user.send(`You are ${room.teams.left[userId].type}`)
+                })
+            }
+            for (const userId in room.teams.right) {
+                const user = client.users.fetch(userId).then((user) => {
+                    user.send(`You are ${room.teams.right[userId].type}`)
+                })
+            }
         }
 
-        const img = await imageProcessor.renderCard(Array.from({length: 8}, () => Math.floor(Math.random() * 101)))
-        message.reply({content: 'Room has started.', files: [{attachment: img}]})
+        if (isRandom) {
+            const result = randomiser.randomise(room.teams, randomisationMode)
+            console.log(result)
+            const img = await imageProcessor.renderCard(result)
+            message.reply({content: 'Room has started.', files: [{attachment: img}]})
+        } else {
+            message.reply('Room has started.')
+        }
     }, (room) => {
         message.reply(`Cannot start room that has ${room.status}`)
     }, () => {
@@ -96,16 +117,20 @@ function startRoom(message, commands, client) {
 
 function endRoom(message, commands) {
     getRoom(message.channelId, [roomStore.status.CREATED, roomStore.status.STARTED], (room) => {
-        message.reply(`
+        if (room.mode == roomStore.mode.IMPOSTOR) {
+            message.reply(`
 ### Team A
 ${Object.entries(room.teams.left).map(([playerId, player]) => {
-return `- ${player.name}: ||${player.type}||`
+    return `- ${player.name}: ||${player.type}||`
 }).join('\n')}
 ### Team B
 ${Object.entries(room.teams.right).map(([playerId, player]) => {
-return `- ${player.name}: ||${player.type}||`
+    return `- ${player.name}: ||${player.type}||`
 }).join('\n')}
-        `)
+                    `)
+        } else {
+            message.reply('Room ended.')
+        }
 
         roomStore.clearAndSetStatus(message.channelId, roomStore.status.ENDED)
     }, (room) => {
@@ -116,9 +141,54 @@ return `- ${player.name}: ||${player.type}||`
     })
 }
 
+async function test(message, command, client) {
+    if (message.author.id != 152819138329444352) return
+
+    const dummyTeams = {
+        left: {
+            [1]: {
+                name: 'player A1',
+                type: ''
+            },
+            [2]: {
+                name: 'player A2',
+                type: ''
+            },
+            [3]: {
+                name: 'player A3',
+                type: ''
+            },
+            [4]: {
+                name: 'player A4',
+                type: ''
+            },
+            [5]: {
+                name: 'player A5',
+                type: ''
+            },
+        },
+        right: {
+            [6]: {
+                name: 'player B1',
+                type: ''
+            },
+            [7]: {
+                name: 'player B2',
+                type: ''
+            },
+        }
+    }
+
+    const result = randomiser.randomiseTeamWeapon(dummyTeams)
+    // console.log(result)
+    const img = await imageProcessor.renderCard(result)
+        message.reply({content: 'Room has started.', files: [{attachment: img}]})
+}
+
 export default {
     createRoom,
     joinRoom,
     startRoom,
-    endRoom
+    endRoom,
+    test
 }

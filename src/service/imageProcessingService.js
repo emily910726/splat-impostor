@@ -28,31 +28,34 @@ function getPlayerName(text) {
     }
 }
 
-async function getPanelComposite(idx) {
+async function getPanelComposite(weapon) {
     const panelBackground = getBackground(160, 64)
     return await Sharp(panelBackground)
     .composite([
-        { input: await getWeaponImage(weaponData[idx].weaponImagePath, 64), top: 0, left: 8 },
-        { input: await getWeaponImage(weaponData[idx].subImagePath, 32), top: 32, left: 64+8 },
-        { input: await getWeaponImage(weaponData[idx].specialImagePath, 32), top: 32, left: 64+8+32+8 }
+        { input: await getWeaponImage(weapon.weaponImagePath, 64), top: 0, left: 8 },
+        { input: await getWeaponImage(weapon.subImagePath, 32), top: 32, left: 64+8 },
+        { input: await getWeaponImage(weapon.specialImagePath, 32), top: 32, left: 64+8+32+8 }
     ])
     .png()
     .toBuffer()
 }
 
 export default {
-    renderCard: async function(weaponIndexes) {
+    renderCard: async function(playerWeaponList) {
         let panels = []
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 2; j++) {
-                const verticalSpacing = 104 * i
-                const horizontalSpacing = j * 400
-                panels.push(
-                    { input: await getPanelComposite(weaponIndexes[2*i + j]), top: verticalSpacing, left: horizontalSpacing + 32 }
-                )
-                panels.push(
-                    { input: getPlayerName('hello'), top: verticalSpacing + 64, left: horizontalSpacing + 32 }
-                )
+                const idx = (4 * j) + i
+                if (playerWeaponList[idx]) {
+                    const verticalSpacing = 104 * i
+                    const horizontalSpacing = j * 400
+                    panels.push(
+                        { input: await getPanelComposite(playerWeaponList[idx].weapon), top: verticalSpacing, left: horizontalSpacing + 32 }
+                    )
+                    panels.push(
+                        { input: getPlayerName(playerWeaponList[idx].player.name), top: verticalSpacing + 64, left: horizontalSpacing + 32 }
+                    )
+                }
             }
         }
 
