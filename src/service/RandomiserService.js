@@ -95,13 +95,33 @@ function randomisePlayerWeapon(players) {
     })
 }
 
-function randomiseTeamWeaponByTier(teams, tier) {
+function randomisePlayerWeaponByTier(players, tiers) {
+    const members = [...Object.keys(players), null, null, null, null].slice(0, 4)
+    if (members.length <= 0) return []
 
+    return members.map((playerId, i) => {
+        if (!playerId) {
+            return null
+        }
+
+        const weaponId = tiers[i][Math.floor(Math.random() * tiers[i].length)]
+        return {
+            player: players[playerId],
+            weapon: weaponMap[weaponId]
+        }
+    })
+}
+
+function randomiseTeamWeaponByTier(teams, tier) {
+    const randomisedTiers = Array.from({length: 4}, () => tier[Math.floor(Math.random() * tier.length)])
+    
+    return [
+        ...randomisePlayerWeaponByTier(teams.left, randomisedTiers),
+        ...randomisePlayerWeaponByTier(teams.right, randomisedTiers)
+    ]
 }
 
 function randomiseTeamWeapon(teams) {
-    console.log(randomisePlayerWeapon(teams.left))
-    console.log(randomisePlayerWeapon(teams.right))
     return [
         ...randomisePlayerWeapon(teams.left),
         ...randomisePlayerWeapon(teams.right)

@@ -102,7 +102,6 @@ function startRoom(message, commands, client) {
 
         if (isRandom) {
             const result = randomiser.randomise(room.teams, randomisationMode)
-            console.log(result)
             const img = await imageProcessor.renderCard(result)
             message.reply({content: 'Room has started.', files: [{attachment: img}]})
         } else {
@@ -180,7 +179,6 @@ async function test(message, command, client) {
     }
 
     const result = randomiser.randomiseTeamWeapon(dummyTeams)
-    // console.log(result)
     const img = await imageProcessor.renderCard(result)
         message.reply({content: 'Room has started.', files: [{attachment: img}]})
 }
