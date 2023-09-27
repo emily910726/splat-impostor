@@ -1,16 +1,9 @@
 
 import Sharp from 'sharp'
+import { weaponData } from '../store/weapons.js'
 
 const BG_COLOR = 'SlateBlue'
 const FG_COLOR = 'white'
-
-async function getWeaponData() {
-    const importedData = await import(`../../data/clean/weapon.json`, { assert: {type: 'json'}})
-
-    return importedData.default
-}
-
-const weaponData = await getWeaponData()
 
 function getBackground(width, height) {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}"><rect x="0" y="0" width="${width}" height="${height}" fill="${BG_COLOR}" fill-opacity="0"/></svg>`
