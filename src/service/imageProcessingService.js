@@ -1,12 +1,11 @@
 
 import Sharp from 'sharp'
-import { weaponData } from '../store/weapons.js'
 
-const BG_COLOR = 'SlateBlue'
-const FG_COLOR = 'white'
+const BG_COLOR = '#99FFFD'
+const FG_COLOR = '#99552E'
 
-function getBackground(width, height) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}"><rect x="0" y="0" width="${width}" height="${height}" fill="${BG_COLOR}" fill-opacity="0"/></svg>`
+function getBackground(width, height, opacity = 0) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}"><rect x="0" y="0" width="${width}" height="${height}" fill="${BG_COLOR}" fill-opacity="${opacity}"/></svg>`
 
     return Buffer.from(svg)
 }
@@ -41,14 +40,14 @@ async function getPanelComposite(weapon) {
 }
 
 export default {
-    renderCard: async function(playerWeaponList) {
+    renderCard: async function(playerWeaponList, stagePath, modePath) {
         let panels = []
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 2; j++) {
                 const idx = (4 * j) + i
                 if (playerWeaponList[idx]) {
-                    const verticalSpacing = 104 * i
-                    const horizontalSpacing = j * 400
+                    const verticalSpacing = (88 * i) + 20
+                    const horizontalSpacing = j * 500
                     panels.push(
                         { input: await getPanelComposite(playerWeaponList[idx].weapon), top: verticalSpacing, left: horizontalSpacing + 32 }
                     )
@@ -59,9 +58,19 @@ export default {
             }
         }
 
-        return await Sharp('./data/clean/images/vs.jpg')
-            .composite(panels)
-            .resize(600, 400)
+        const height = 400
+        const width = 710
+        const padding = 20
+        const overlay = { input: getBackground(width - (2 * padding), height - (2 * padding), 0.6), top: padding, left: padding }
+        const mode = { input: await getWeaponImage(modePath, 96), top: 152, left: 312 }
+        return await Sharp(stagePath)
+            .composite([
+                overlay,
+                mode,
+                ...panels
+            ])
+            // .resize(600, 400)
+            .resize(width, height)
             .png()
             .toBuffer()
     }

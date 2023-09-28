@@ -1,4 +1,5 @@
 import { weaponData } from '../store/weapons.js'
+import { stagesData, vsModeData } from '../store/stages.js'
 import roomStore from '../store/rooms.js'
 
 const weaponMap = weaponData.reduce((a, v) => ({ ...a, [v.id]: v }), {})
@@ -65,7 +66,7 @@ const weaponClassTier = validateCompleteList('Weapon class matchmaking',
     weaponData.reduce((a, v) => {
         a[Math.floor(v.type/1000)].push(v.id)
         return a
-    } ,[[],[],[],[],[],[],[],[],[]])
+    } ,[[],[],[],[],[],[],[],[],[],[]])
 )
 
 function randomisePlayers(players) {
@@ -146,11 +147,25 @@ function randomise(teams, selectedMode) {
     }
 }
 
+function randomiseStage() {
+    const stageIdx = Math.floor(Math.random() * stagesData.length)
+
+    return `./data/clean/images/stages/${stagesData[stageIdx].id}.png`
+}
+
+function randomiseMode() {
+    const modeIdx = Math.floor(Math.random() * vsModeData.length)
+
+    return `./data/clean/images/vsMode/${vsModeData[modeIdx]}.png`
+}
+
 export default {
     randomiseTeamWeaponByTier,
     randomiseTeamWeapon,
     randomiseImpostor,
     randomise,
+    randomiseStage,
+    randomiseMode,
     xTierLax,
     xTierStrict,
     weaponClassTier,

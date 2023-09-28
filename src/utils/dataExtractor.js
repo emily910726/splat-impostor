@@ -14,6 +14,7 @@ async function getLocalisation() {
         weaponName: rawData['CommonMsg/Weapon/WeaponName_Main'],
         subName: rawData['CommonMsg/Weapon/WeaponName_Sub'],
         specialName: rawData['CommonMsg/Weapon/WeaponName_Special'],
+        stages: rawData['CommonMsg/VS/VSStageName']
     }
 }
 
@@ -50,15 +51,45 @@ async function extract() {
     const weaponData = enrichWeapondata(rawWeapons, texts)
 
     weaponData.sort((a, b) => b.range - a.range)
+    let stages = []
     try {
         await mkdir('./data/clean/images/weapons', { recursive: true })
         await mkdir('./data/clean/images/subspe', { recursive: true })
+        await mkdir('./data/clean/images/stages', { recursive: true })
+        await mkdir('./data/clean/images/vsmode', { recursive: true })
         await copyFile(
             `./data/raw/vs.jpg`,
             `./data/clean/images/vs.jpg`
         )
+
+        Object.entries(texts.stages).forEach( async ([k, v]) => {
+            if (k == 'Random' || k == 'Unknown') return
+            stages.push({ id: k, name: v})
+            await copyFile(
+                `./data/raw/splat3/images/stageL/Vss_${k}.png`,
+                `./data/clean/images/stages/${k}.png`
+            )
+        })
+
+        await copyFile(
+            `./data/raw/splat3/images/badge/Badge_WinCount_Var_Lv00.png`,
+            `./data/clean/images/vsmode/zones.png`
+        )
+        await copyFile(
+            `./data/raw/splat3/images/badge/Badge_WinCount_Vcl_Lv00.png`,
+            `./data/clean/images/vsmode/clams.png`
+        )
+        await copyFile(
+            `./data/raw/splat3/images/badge/Badge_WinCount_Vgl_Lv00.png`,
+            `./data/clean/images/vsmode/tc.png`
+        )
+        await copyFile(
+            `./data/raw/splat3/images/badge/Badge_WinCount_Vlf_Lv00.png`,
+            `./data/clean/images/vsmode/rainmaker.png`
+        )
     } catch(e) {}
     await writeFile('./data/clean/weapon.json', JSON.stringify(weaponData, null, 2))
+    await writeFile('./data/clean/stages.json', JSON.stringify(stages, null, 2))
     weaponData.map(async weapon => {
         await copyFile(
             `./data/raw/splat3/images/weapon_flat/Path_Wst_${weapon.id}.png`,

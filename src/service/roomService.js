@@ -102,7 +102,9 @@ function startRoom(message, commands, client) {
 
         if (isRandom) {
             const result = randomiser.randomise(room.teams, randomisationMode)
-            const img = await imageProcessor.renderCard(result)
+            const stage = randomiser.randomiseStage()
+            const vsMode = randomiser.randomiseMode()
+            const img = await imageProcessor.renderCard(result, stage, vsMode)
             message.reply({content: 'Room has started.', files: [{attachment: img}]})
         } else {
             message.reply('Room has started.')
@@ -175,11 +177,19 @@ async function test(message, command, client) {
                 name: 'player B2',
                 type: ''
             },
+            [8]: {
+                name: 'player B3',
+                type: ''
+            },
+            [9]: {
+                name: 'player B4',
+                type: ''
+            },
         }
     }
 
     const result = randomiser.randomiseTeamWeapon(dummyTeams)
-    const img = await imageProcessor.renderCard(result)
+    const img = await imageProcessor.renderCard(result, './data/clean/images/stages/Factory.png', './data/clean/images/vsmode/zones.png')
         message.reply({content: 'Room has started.', files: [{attachment: img}]})
 }
 
