@@ -28,6 +28,7 @@ function joinRoom(message, commands) {
         if (commands.length >= 1) {
             let side = undefined
             let otherSide = undefined
+            console.log(commands[0])
             switch(commands[0]) {
                 case 'a':
                 case 'left':
@@ -142,8 +143,8 @@ ${Object.entries(room.teams.right).map(([playerId, player]) => {
     })
 }
 
-async function test(message, command, client) {
-    if (message.author.id != 152819138329444352) return
+async function test(message, commands, client) {
+    // if (message.author.id != 152819138329444352) return
 
     const dummyTeams = {
         left: {
@@ -193,10 +194,77 @@ async function test(message, command, client) {
         message.reply({content: 'Room has started.', files: [{attachment: img}]})
 }
 
+async function quickStart(message, commands) {
+    const dummyTeams = {
+        left: {
+            [1]: {
+                name: 'player A1你好',
+                type: ''
+            },
+            [2]: {
+                name: 'player A2',
+                type: ''
+            },
+            [3]: {
+                name: 'player A3',
+                type: ''
+            },
+            [4]: {
+                name: 'player A4',
+                type: ''
+            },
+            [5]: {
+                name: 'player A5',
+                type: ''
+            },
+        },
+        right: {
+            [6]: {
+                name: 'player B1我好',
+                type: ''
+            },
+            [7]: {
+                name: 'player B2',
+                type: ''
+            },
+            [8]: {
+                name: 'player B3',
+                type: ''
+            },
+            [9]: {
+                name: 'player B4',
+                type: ''
+            },
+        }
+    }
+
+    let randomisationMode = randomiser.mode.WILD
+    if (commands.length > 0) {
+        switch (commands[0]) {
+            case 'strict': 
+                randomisationMode = randomiser.mode.X_STRICT
+                break
+            case 'lax': 
+                randomisationMode = randomiser.mode.X_LAX
+                break
+            case 'class': 
+                randomisationMode = randomiser.mode.CLASS
+                break
+        }
+    }
+
+    const result = randomiser.randomise(dummyTeams, randomisationMode)
+    const stage = randomiser.randomiseStage()
+    const vsMode = randomiser.randomiseMode()
+    const img = await imageProcessor.renderCard(result, stage, vsMode)
+    message.reply({content: 'Room has started.', files: [{attachment: img}]})
+}
+
 export default {
     createRoom,
     joinRoom,
     startRoom,
     endRoom,
-    test
+    quickStart,
+    test,
 }

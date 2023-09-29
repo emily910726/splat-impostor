@@ -16,13 +16,24 @@ async function getWeaponImage(path, side) {
         .toBuffer()
 }
 
+function getPlayerNameSVG(text, width, height){
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}"><text x="0" y="10" fill="${FG_COLOR}">${text}</text></svg>`
+
+    return Buffer.from(svg)
+}
+
 function getPlayerName(text) {
     return {
         text: { 
             text: `<span background="#00FF0001" foreground="${FG_COLOR}">${text}</span>`,
             width: 144,
             height: 16, 
-            rgba: true
+            // font: "google",
+            // fontfile:"/home/ec2-user/splat-impostor/data/clean/fonts/google.ttf",
+            // fontFile:"C:\projects\splat-impostor\data\clean\fonts",
+            rgba: true,
+            justify: true,
+            spacing: 10
         }
     }
 }
@@ -52,7 +63,7 @@ export default {
                         { input: await getPanelComposite(playerWeaponList[idx].weapon), top: verticalSpacing, left: horizontalSpacing + 32 }
                     )
                     panels.push(
-                        { input: getPlayerName(playerWeaponList[idx].player.name), top: verticalSpacing + 64, left: horizontalSpacing + 32 }
+                        { input: getPlayerNameSVG(playerWeaponList[idx].player.name, 160, 16), top: verticalSpacing + 64, left: horizontalSpacing + 32 }
                     )
                 }
             }

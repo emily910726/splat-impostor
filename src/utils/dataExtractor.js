@@ -57,13 +57,15 @@ async function extract() {
         await mkdir('./data/clean/images/subspe', { recursive: true })
         await mkdir('./data/clean/images/stages', { recursive: true })
         await mkdir('./data/clean/images/vsmode', { recursive: true })
-        await copyFile(
-            `./data/raw/vs.jpg`,
-            `./data/clean/images/vs.jpg`
-        )
+        // await copyFile(
+        //     `./data/raw/vs.jpg`,
+        //     `./data/clean/images/vs.jpg`
+        // )
+        // console.log(texts.stages)
 
         Object.entries(texts.stages).forEach( async ([k, v]) => {
             if (k == 'Random' || k == 'Unknown') return
+            console.log("pushing")
             stages.push({ id: k, name: v})
             await copyFile(
                 `./data/raw/splat3/images/stageL/Vss_${k}.png`,
@@ -89,6 +91,8 @@ async function extract() {
         )
     } catch(e) {}
     await writeFile('./data/clean/weapon.json', JSON.stringify(weaponData, null, 2))
+    console.log(stages)
+    console.log(JSON.stringify(stages, null, 2))
     await writeFile('./data/clean/stages.json', JSON.stringify(stages, null, 2))
     weaponData.map(async weapon => {
         await copyFile(

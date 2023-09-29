@@ -66,7 +66,7 @@ const weaponClassTier = validateCompleteList('Weapon class matchmaking',
     weaponData.reduce((a, v) => {
         a[Math.floor(v.type/1000)].push(v.id)
         return a
-    } ,[[],[],[],[],[],[],[],[],[],[]])
+    } ,[[],[],[],[],[],[],[],[],[]])
 )
 
 function randomisePlayers(players) {

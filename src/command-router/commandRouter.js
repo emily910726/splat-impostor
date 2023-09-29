@@ -16,10 +16,15 @@ function route(message, commands, client) {
         case 'end':
             roomService.endRoom(message, rest)
             break
+        case 'qs':
+        case 'quick-start':
+            roomService.quickStart(message, rest, client)
+            break
         case 'test':
             roomService.test(message, rest, client)
             break
-        // todo: default manual
+        default:
+            message.reply("对不起，我不认识这个指令。")
     }
 }
 
