@@ -27,13 +27,8 @@ function getPlayerName(text) {
         text: { 
             text: `<span background="#00FF0001" foreground="${FG_COLOR}">${text}</span>`,
             width: 144,
-            height: 16, 
-            // font: "google",
-            // fontfile:"/home/ec2-user/splat-impostor/data/clean/fonts/google.ttf",
-            // fontFile:"C:\projects\splat-impostor\data\clean\fonts",
-            rgba: true,
-            justify: true,
-            spacing: 10
+            height: 16,
+            rgba: true
         }
     }
 }
@@ -63,7 +58,7 @@ export default {
                         { input: await getPanelComposite(playerWeaponList[idx].weapon), top: verticalSpacing, left: horizontalSpacing + 32 }
                     )
                     panels.push(
-                        { input: getPlayerNameSVG(playerWeaponList[idx].player.name, 160, 16), top: verticalSpacing + 64, left: horizontalSpacing + 32 }
+                        { input: getPlayerName(playerWeaponList[idx].player.name), top: verticalSpacing + 64, left: horizontalSpacing + 32 }
                     )
                 }
             }

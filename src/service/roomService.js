@@ -28,7 +28,6 @@ function joinRoom(message, commands) {
         if (commands.length >= 1) {
             let side = undefined
             let otherSide = undefined
-            console.log(commands[0])
             switch(commands[0]) {
                 case 'a':
                 case 'left':
@@ -145,7 +144,7 @@ ${Object.entries(room.teams.right).map(([playerId, player]) => {
 }
 
 async function test(message, commands, client) {
-    // if (message.author.id != 152819138329444352) return
+    if (message.author.id != 152819138329444352) return
 
     const dummyTeams = {
         left: {
@@ -187,12 +186,12 @@ async function test(message, commands, client) {
                 name: 'player B4',
                 type: ''
             },
-                    }
+        }
     }
 
     const result = randomiser.randomiseTeamWeapon(dummyTeams)
-        const img = await imageProcessor.renderCard(result, './data/clean/images/stages/Factory.png', './data/clean/images/vsmode/zones.png')
-        message.reply({content: 'Room has started.', files: [{attachment: img}]})
+    const img = await imageProcessor.renderCard(result, './data/clean/images/stages/Factory.png', './data/clean/images/vsmode/zones.png')
+    message.reply({ content: 'Room has started.', files: [{ attachment: img }] })
 }
 
 async function quickStart(message, commands) {

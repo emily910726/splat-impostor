@@ -13,9 +13,11 @@ const mode = {
 
 function validateCompleteList(description, list) {
     const mapCopy = { ...weaponMap }
-    list.forEach(subList => {
-        subList.forEach(weaponId => delete mapCopy[weaponId])
-    })
+    for (const subList of list) {
+        for (const weaponId of subList) {
+            delete mapCopy[weaponId]
+        }
+    }
 
     if (Object.keys(mapCopy).length > 1) {
         console.error(`${description} is incomplete, missing:`)
@@ -50,8 +52,7 @@ const xTierStrict = validateCompleteList('X rank strict weapon matchmaking', [
     ['Roller_Heavy_00', 'Roller_Heavy_01', 'Saber_Normal_00', 'Shelter_Wide_00', 'Shelter_Wide_01', 'Roller_Hunter_00',
     'Brush_Heavy_00', 'Roller_Wide_00', 'Roller_Wide_01'], // long-ranged rollers/brushes/wipers/brellas
     ['Saber_Lite_00', 'Saber_Lite_01', 'Shelter_Normal_00', 'Shelter_Normal_01', 'Brush_Normal_00', 'Roller_Compact_00',
-    'Roller_Compact_01', 'Brush_Mini_00', 'Brush_Mini_01', 'Roller_Normal_00', 'Roller_Normal_01', 'Shelter_Compact_00',
-    ''], // short-ranged rollers/brushes/wipers/brellas
+    'Roller_Compact_01', 'Brush_Mini_00', 'Brush_Mini_01', 'Roller_Normal_00', 'Roller_Normal_01', 'Shelter_Compact_00'], // short-ranged rollers/brushes/wipers/brellas
 
 ])
 
@@ -114,8 +115,18 @@ function randomisePlayerWeaponByTier(players, tiers) {
 }
 
 function randomiseTeamWeaponByTier(teams, tier) {
-    const randomisedTiers = Array.from({length: 4}, () => tier[Math.floor(Math.random() * tier.length)])
-    
+    const randomisedTiers = [1, 2, 3, 4].map(x => {
+        const weaponIdx = Math.floor(Math.random() * weaponData.length)
+        let left = weaponIdx
+        for (const subTier of tier) {
+            left -= subTier.length
+            if (left <= 0) return subTier
+        }
+
+        return tier[tier.length - 1]
+    })
+    // const randomisedTiers = Array.from({length: 4}, () => tier[Math.floor(Math.random() * tier.length)])
+
     return [
         ...randomisePlayerWeaponByTier(teams.left, randomisedTiers),
         ...randomisePlayerWeaponByTier(teams.right, randomisedTiers)
