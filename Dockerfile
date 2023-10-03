@@ -18,6 +18,8 @@ COPY --from=build /app/node_modules ./node_modules/
 COPY --from=build /app/src ./src/
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/.env ./
+RUN cp /app/src/Noto_Sans_TC.zip /usr/local/share/fonts
+RUN unzip /usr/local/share/fonts/Noto_Sans_TC.zip -d /usr/local/share/fonts
 
 CMD ["npm", "run", "start"]
 # ENTRYPOINT ["tail", "-f", "/dev/null"]
