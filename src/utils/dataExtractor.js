@@ -1,4 +1,3 @@
-import Sharp from 'sharp'
 import { mkdir, writeFile, copyFile } from 'node:fs/promises'
 
 const LANGUAGE = 'USen'

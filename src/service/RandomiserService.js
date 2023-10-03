@@ -167,7 +167,7 @@ function randomiseStage() {
 function randomiseMode() {
     const modeIdx = Math.floor(Math.random() * vsModeData.length)
 
-    return `./data/clean/images/vsMode/${vsModeData[modeIdx]}.png`
+    return `./data/clean/images/vsmode/${vsModeData[modeIdx]}.png`
 }
 
 export default {
