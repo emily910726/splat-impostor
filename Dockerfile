@@ -18,7 +18,7 @@ COPY --from=build /app/node_modules ./node_modules/
 COPY --from=build /app/src ./src/
 COPY --from=build /app/fonts ./fonts/
 COPY --from=build /app/package*.json ./
-RUN cp /app/fonts/Noto_Sans_TC.zip /usr/local/share/fonts
-RUN unzip /usr/local/share/fonts/Noto_Sans_TC.zip -d /usr/local/share/fonts
+RUN cp /app/fonts/Noto_Serif_SC.zip /usr/local/share/fonts
+RUN unzip /usr/local/share/fonts/Noto_Serif_SC.zip -d /usr/local/share/fonts
 
 CMD ["npm", "run", "start"]

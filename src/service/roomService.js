@@ -207,7 +207,7 @@ async function quickStart(message, commands) {
     const dummyTeams = {
         left: {
             [1]: {
-                name: 'player A1你好',
+                name: 'player A1',
                 type: ''
             },
             [2]: {
@@ -229,7 +229,7 @@ async function quickStart(message, commands) {
         },
         right: {
             [6]: {
-                name: 'player B1我好',
+                name: 'player B1',
                 type: ''
             },
             [7]: {
