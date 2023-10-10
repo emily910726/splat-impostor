@@ -1,11 +1,11 @@
 
 import Sharp from 'sharp'
 
-const BG_COLOR = '#99FFFD'
+const BG_COLOR = ['#89FBED', '#FA89F3', '#FAE389']
 const FG_COLOR = '#99552E'
 
-function getBackground(width, height, opacity = 0) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}"><rect x="0" y="0" width="${width}" height="${height}" fill="${BG_COLOR}" fill-opacity="${opacity}"/></svg>`
+function getBackground(width, height, opacity = 0, fill = BG_COLOR[0]) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}"><rect x="0" y="0" width="${width}" height="${height}" fill="${fill}" fill-opacity="${opacity}"/></svg>`
 
     return Buffer.from(svg)
 }
@@ -14,12 +14,6 @@ async function getWeaponImage(path, side) {
     return await Sharp(path)
         .resize(side, side)
         .toBuffer()
-}
-
-function getPlayerNameSVG(text, width, height){
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}"><text x="0" y="10" fill="${FG_COLOR}">${text}</text></svg>`
-
-    return Buffer.from(svg)
 }
 
 function getPlayerName(text) {
@@ -75,7 +69,50 @@ export default {
                 mode,
                 ...panels
             ])
-            // .resize(600, 400)
+            .resize(width, height)
+            .png()
+            .toBuffer()
+    },
+    renderTiers: async function(tier) {
+        const sidePanelWidth = 150
+        const side = 32
+        const opacity = 0.6
+        const width = (side * 8) + sidePanelWidth
+        let bgIdx = 0
+        let height = 0
+        let panels = [{
+            input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: 0, left: sidePanelWidth
+        }]
+        let offsetY = 0
+        for (let subTier of tier) {
+            let offsetX = sidePanelWidth
+            panels.push({ input: getPlayerName(subTier.description), top: offsetY + 8, left:0 })
+            for (let weapon of subTier.weapons) {
+                panels.push(
+                    { input: await getWeaponImage(weapon.weaponImagePath, side), top: offsetY, left: offsetX }
+                )
+                offsetX += side
+                if (offsetX > width) {
+                    offsetX = sidePanelWidth
+                    offsetY += side
+                    panels.push({
+                        input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: offsetY, left: sidePanelWidth
+                    })
+                }
+            }
+            bgIdx = (bgIdx + 1) % BG_COLOR.length
+            if (offsetX > sidePanelWidth) {
+                offsetY += side
+                panels.push({
+                    input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: offsetY, left: sidePanelWidth
+                })
+            }
+            height = offsetY
+        }
+
+        const panelBackground = getBackground(width, height)
+        return await Sharp(panelBackground)
+            .composite(panels)
             .resize(width, height)
             .png()
             .toBuffer()

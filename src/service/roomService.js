@@ -63,6 +63,7 @@ function startRoom(message, commands, client) {
         let mode = roomStore.mode.IMPOSTOR
         let isRandom = false
         let randomisationMode = randomiser.mode.WILD
+        let customRandomisationRule = 'ffmb'
         if (commands.length > 0) {
             if (commands[0] == 'vs') mode = roomStore.mode.VERSUS
             if (commands[0] == 'im') mode = roomStore.mode.IMPOSTOR
@@ -81,6 +82,14 @@ function startRoom(message, commands, client) {
                 case 'class': 
                     randomisationMode = randomiser.mode.CLASS
                     break
+                case 'custom': 
+                    randomisationMode = randomiser.mode.CUSTOM
+                    break
+            }
+        }
+        if (commands.length > 3) {
+            if (commands[3].length == 4) {
+                customRandomisationRule = commands[3]
             }
         }
 
@@ -102,7 +111,7 @@ function startRoom(message, commands, client) {
         }
 
         if (isRandom) {
-            const result = randomiser.randomise(room.teams, randomisationMode)
+            const result = randomiser.randomise(room.teams, randomisationMode, customRandomisationRule)
             const stage = randomiser.randomiseStage()
             const vsMode = randomiser.randomiseMode()
             const img = await imageProcessor.renderCard(result, stage, vsMode)
@@ -239,6 +248,7 @@ async function quickStart(message, commands) {
     }
 
     let randomisationMode = randomiser.mode.WILD
+    let customRandomisationRule = 'ffmb'
     if (commands.length > 0) {
         switch (commands[0]) {
             case 'strict': 
@@ -250,10 +260,18 @@ async function quickStart(message, commands) {
             case 'class': 
                 randomisationMode = randomiser.mode.CLASS
                 break
+            case 'custom': 
+                randomisationMode = randomiser.mode.CUSTOM
+                break
+        }
+    }
+    if (commands.length > 1) {
+        if (commands[1].length == 4) {
+            customRandomisationRule = commands[1]
         }
     }
 
-    const result = randomiser.randomise(dummyTeams, randomisationMode)
+    const result = randomiser.randomise(dummyTeams, randomisationMode, customRandomisationRule)
     const stage = randomiser.randomiseStage()
     const vsMode = randomiser.randomiseMode()
     const img = await imageProcessor.renderCard(result, stage, vsMode)

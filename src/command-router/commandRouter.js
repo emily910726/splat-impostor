@@ -1,4 +1,5 @@
 import roomService from '../service/roomService.js'
+import infoService from '../service/infoService.js'
 
 function route(message, commands, client) {
     const [handlerKey, ...rest] = commands
@@ -20,6 +21,9 @@ function route(message, commands, client) {
             case 'qs':
             case 'quick-start':
                 roomService.quickStart(message, rest, client)
+                break
+            case 'explain':
+                infoService.renderTier(message, rest, client)
                 break
             case 'test':
                 roomService.test(message, rest, client)

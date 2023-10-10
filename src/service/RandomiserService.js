@@ -8,13 +8,14 @@ const mode = {
     WILD: 'wild',
     X_STRICT: 'x-strict',
     X_LAX: 'x-lax',
-    CLASS: 'class'
+    CLASS: 'class',
+    CUSTOM: 'custom'
 }
 
 function validateCompleteList(description, list) {
     const mapCopy = { ...weaponMap }
     for (const subList of list) {
-        for (const weaponId of subList) {
+        for (const weaponId of subList.weapons) {
             delete mapCopy[weaponId]
         }
     }
@@ -28,47 +29,100 @@ function validateCompleteList(description, list) {
 }
 
 const xTierStrict = validateCompleteList('X rank strict weapon matchmaking', [
-    ['Charger_LongScope_00', 'Charger_Long_00', 'Charger_NormalScope_00', 'Charger_NormalScope_01',
-    'Charger_Normal_00', 'Charger_Normal_01'], // long-ranged chargers
-    ['Charger_Pencil_00', 'Charger_Keeper_00', 'Charger_Keeper_01', 'Charger_Light_00', 'Charger_Quick_00'], // mid-ranged chargers
-
-    ['Stringer_Normal_00', 'Stringer_Normal_01', 'Spinner_Downpour_00', 'Spinner_Downpour_01', 'Spinner_Hyper_00',
-    'Spinner_Standard_00', 'Spinner_Standard_01', 'Spinner_HyperShort_00'], // long-ranged weapons
-    ['Shooter_Long_00', 'Shooter_Long_01', 'Shooter_Flash_00', 'Shooter_Heavy_00', 'Shooter_Heavy_01', 'Spinner_Serein_00',
-    'Maneuver_Dual_00', 'Maneuver_Dual_01', 'Shooter_Expert_00', 'Shooter_Expert_01', 'Shooter_TripleMiddle_00', 
-    'Shooter_TripleMiddle_01', 'Maneuver_Gallon_00', 'Shooter_QuickLong_00', 'Shooter_QuickLong_01', 'Spinner_Quick_00',
-    'Spinner_Quick_01', 'Stringer_Short_00', ], // mid-ranged weapons
-    ['Maneuver_Stepper_00', 'Maneuver_Stepper_01', 'Shooter_TripleQuick_00', 'Shooter_TripleQuick_01', 'Shooter_Gravity_00',
-    'Maneuver_Normal_00', 'Shooter_Normal_00', 'Shooter_Normal_01', 'Shooter_Normal_H', 'Shooter_Short_00', 'Shooter_Short_01', 'Shooter_Blaze_00',
-    'Shooter_Blaze_01', 'Shooter_QuickMiddle_00', 'Shooter_QuickMiddle_01', 'Shooter_Precision_00', 'Shooter_Precision_01',
-    'Shooter_First_00', 'Shooter_First_01'], // short-ranged weapons
-
-    ['Slosher_Washtub_00', 'Blaster_LightLong_00', 'Blaster_LightLong_01', 'Blaster_Long_00',
-    'Blaster_Light_00', 'Blaster_Light_01', 'Blaster_Precision_00', 'Slosher_Bathtub_00', 'Slosher_Bathtub_01'], // long-ranged blasters/sloshers
-    ['Slosher_Double_00', 'Slosher_Launcher_00', 'Slosher_Launcher_01', 'Slosher_Strong_00', 'Slosher_Strong_01',
-    'Blaster_Middle_00', 'Slosher_Diffusion_00', 'Slosher_Diffusion_01', 'Blaster_LightShort_00', 'Blaster_LightShort_01',
-    'Blaster_Short_00', 'Blaster_Short_01', 'Maneuver_Short_00', 'Maneuver_Short_01'], // short-ranged blasters/sloshers
-
-    ['Roller_Heavy_00', 'Roller_Heavy_01', 'Saber_Normal_00', 'Shelter_Wide_00', 'Shelter_Wide_01', 'Roller_Hunter_00',
-    'Brush_Heavy_00', 'Roller_Wide_00', 'Roller_Wide_01'], // long-ranged rollers/brushes/wipers/brellas
-    ['Saber_Lite_00', 'Saber_Lite_01', 'Shelter_Normal_00', 'Shelter_Normal_01', 'Brush_Normal_00', 'Roller_Compact_00',
-    'Roller_Compact_01', 'Brush_Mini_00', 'Brush_Mini_01', 'Roller_Normal_00', 'Roller_Normal_01', 'Shelter_Compact_00'], // short-ranged rollers/brushes/wipers/brellas
-
+    {
+        description: 'Long-ranged chargers',
+        weapons: ['Charger_LongScope_00', 'Charger_Long_00', 'Charger_NormalScope_00', 'Charger_NormalScope_01', 'Charger_Normal_00', 'Charger_Normal_01']
+    },
+    {
+        description: 'Mid-ranged chargers',
+        weapons: ['Charger_Pencil_00', 'Charger_Keeper_00', 'Charger_Keeper_01', 'Charger_Light_00', 'Charger_Quick_00']
+    },
+    {
+        description: 'Long-ranged weapons',
+        weapons: ['Stringer_Normal_00', 'Stringer_Normal_01', 'Spinner_Downpour_00', 'Spinner_Downpour_01', 'Spinner_Hyper_00', 'Spinner_Standard_00', 'Spinner_Standard_01', 'Spinner_HyperShort_00']
+    },
+    {
+        description: 'Mid-ranged weapons',
+        weapons: ['Shooter_Long_00', 'Shooter_Long_01', 'Shooter_Flash_00', 'Shooter_Heavy_00', 'Shooter_Heavy_01', 'Spinner_Serein_00', 'Maneuver_Dual_00', 'Maneuver_Dual_01', 'Shooter_Expert_00',
+        'Shooter_Expert_01', 'Shooter_TripleMiddle_00', 'Shooter_TripleMiddle_01', 'Maneuver_Gallon_00', 'Shooter_QuickLong_00', 'Shooter_QuickLong_01', 'Spinner_Quick_00', 'Spinner_Quick_01', 'Stringer_Short_00', ]
+    },
+    {
+        description: 'Short-ranged weapons',
+        weapons: ['Maneuver_Stepper_00', 'Maneuver_Stepper_01', 'Shooter_TripleQuick_00', 'Shooter_TripleQuick_01', 'Shooter_Gravity_00', 'Maneuver_Normal_00', 'Shooter_Normal_00', 'Shooter_Normal_01', 'Shooter_Normal_H',
+        'Shooter_Short_00', 'Shooter_Short_01', 'Shooter_Blaze_00', 'Shooter_Blaze_01', 'Shooter_QuickMiddle_00', 'Shooter_QuickMiddle_01', 'Shooter_Precision_00', 'Shooter_Precision_01', 'Shooter_First_00', 'Shooter_First_01']
+    },
+    {
+        description: 'Long-ranged blasters and sloshers',
+        weapons: ['Slosher_Washtub_00', 'Blaster_LightLong_00', 'Blaster_LightLong_01', 'Blaster_Long_00', 'Blaster_Light_00', 'Blaster_Light_01', 'Blaster_Precision_00', 'Slosher_Bathtub_00', 'Slosher_Bathtub_01']
+    },
+    {
+        description: 'Short-ranged blasters and sloshers',
+        weapons: ['Slosher_Double_00', 'Slosher_Launcher_00', 'Slosher_Launcher_01', 'Slosher_Strong_00', 'Slosher_Strong_01', 'Blaster_Middle_00', 'Slosher_Diffusion_00', 'Slosher_Diffusion_01', 'Blaster_LightShort_00',
+        'Blaster_LightShort_01', 'Blaster_Short_00', 'Blaster_Short_01', 'Maneuver_Short_00', 'Maneuver_Short_01']
+    },
+    {
+        description: 'Long-ranged rollers, brushes, wipers, and brellas',
+        weapons: ['Roller_Heavy_00', 'Roller_Heavy_01', 'Saber_Normal_00', 'Shelter_Wide_00', 'Shelter_Wide_01', 'Roller_Hunter_00', 'Brush_Heavy_00', 'Roller_Wide_00', 'Roller_Wide_01']
+    },
+    {
+        description: 'Short-ranged rollers, brushes, wipers, and brellas',
+        weapons: ['Saber_Lite_00', 'Saber_Lite_01', 'Shelter_Normal_00', 'Shelter_Normal_01', 'Brush_Normal_00', 'Roller_Compact_00', 'Roller_Compact_01', 'Brush_Mini_00', 'Brush_Mini_01', 'Roller_Normal_00',
+        'Roller_Normal_01', 'Shelter_Compact_00']
+    },
 ])
 
 const xTierLax = validateCompleteList('X rank relaxed weapon matchmaking', [
-    [...xTierStrict[0], ...xTierStrict[1]], // orange
-    [...xTierStrict[2], ...xTierStrict[3], ...xTierStrict[4]], // blue
-    [...xTierStrict[5], ...xTierStrict[6]], // purple
-    [...xTierStrict[7], ...xTierStrict[8]], // green
+    {
+        description: 'Chargers',
+        weapons: [...xTierStrict[0].weapons, ...xTierStrict[1].weapons]
+    },
+    {
+        description: 'Weapons',
+        weapons: [...xTierStrict[2].weapons, ...xTierStrict[3].weapons, ...xTierStrict[4].weapons]
+    },
+    {
+        description: 'Blasters and sloshers',
+        weapons: [...xTierStrict[5].weapons, ...xTierStrict[6].weapons]
+    },
+    {
+        description: 'Rollers, brushes, wipers, and brellas',
+        weapons: [...xTierStrict[7].weapons, ...xTierStrict[8].weapons]
+    },
 ])
 
+const classDescription = [
+    'Shooters', 'Semi-autos', 'Rollers &amp; brushes', 'Chargers', 'Sloshers',
+    'Splatlings', 'Dualies', 'Brellas', 'Stringers', 'Splatanas'
+]
 const weaponClassTier = validateCompleteList('Weapon class matchmaking',
     weaponData.reduce((a, v) => {
-        a[Math.floor(v.type/1000)].push(v.id)
+        const estimatedIdx = v.type/1000
+        let idx = Math.floor(estimatedIdx)
+        if (estimatedIdx > 0.1) idx++
+        a[idx].push(v.id)
         return a
-    } ,[[],[],[],[],[],[],[],[],[]])
+    } ,[[],[],[],[],[],[],[],[],[],[]]).map( (x, i) => {
+        return {
+            description: classDescription[i],
+            weapons: x
+        }
+    })
 )
+
+const customTier = {
+    b: {
+        description: 'backline',
+        weapons: ['Charger_LongScope_00', 'Charger_Long_00', 'Charger_NormalScope_00', 'Charger_NormalScope_01', 'Charger_Normal_00', 'Charger_Normal_01']
+    },
+    m: {
+        description: 'midline',
+        weapons: ['Shooter_Long_00', 'Shooter_Long_01', 'Shooter_Flash_00', 'Shooter_Heavy_00', 'Shooter_Heavy_01', 'Spinner_Serein_00', 'Maneuver_Dual_00']
+    },
+    f: {
+        description: 'frontline',
+        weapons: ['Maneuver_Stepper_00', 'Maneuver_Stepper_01', 'Shooter_TripleQuick_00', 'Shooter_TripleQuick_01', 'Shooter_Gravity_00', 'Maneuver_Normal_00', 'Shooter_Normal_00', 'Shooter_Normal_01']
+    },
+}
 
 function randomisePlayers(players) {
     const members = Object.keys(players)
@@ -107,11 +161,16 @@ function randomisePlayerWeaponByTier(players, tiers) {
         }
 
         const weaponId = tiers[i][Math.floor(Math.random() * tiers[i].length)]
+        
         return {
             player: players[playerId],
-            weapon: weaponMap[weaponId]
+            weapon: getWeapon(weaponId)
         }
     })
+}
+
+function getWeapon(idx) {
+    return weaponMap[idx]
 }
 
 function randomiseTeamWeaponByTier(teams, tier) {
@@ -119,17 +178,42 @@ function randomiseTeamWeaponByTier(teams, tier) {
         const weaponIdx = Math.floor(Math.random() * weaponData.length)
         let left = weaponIdx
         for (const subTier of tier) {
-            left -= subTier.length
-            if (left <= 0) return subTier
+            left -= subTier.weapons.length
+            if (left <= 0) return subTier.weapons
         }
 
-        return tier[tier.length - 1]
+        return tier[tier.length - 1].weapons
     })
-    // const randomisedTiers = Array.from({length: 4}, () => tier[Math.floor(Math.random() * tier.length)])
 
     return [
         ...randomisePlayerWeaponByTier(teams.left, randomisedTiers),
         ...randomisePlayerWeaponByTier(teams.right, randomisedTiers)
+    ]
+}
+
+function randomisePlayerWeaponByCustomRule(players, tiers, details) {
+    const members = [...Object.keys(players), null, null, null, null].slice(0, 4)
+    if (members.length <= 0) return []
+
+    return members.map((playerId, i) => {
+        if (!playerId) {
+            return null
+        }
+
+        const selectedTier = tiers[details[i]]
+        const weaponId = selectedTier.weapons[Math.floor(Math.random() * selectedTier.weapons.length)]
+        
+        return {
+            player: players[playerId],
+            weapon: getWeapon(weaponId)
+        }
+    })
+}
+
+function randomiseByCustomRule(teams, tier, details) {
+    return [
+        ...randomisePlayerWeaponByCustomRule(teams.left, tier, details),
+        ...randomisePlayerWeaponByCustomRule(teams.right, tier, details)
     ]
 }
 
@@ -145,7 +229,7 @@ function randomiseImpostor(teams) {
     randomisePlayers(teams.right)
 }
 
-function randomise(teams, selectedMode) {
+function randomise(teams, selectedMode, details) {
     switch (selectedMode) {
         case mode.X_STRICT:
             return randomiseTeamWeaponByTier(teams, xTierStrict)
@@ -153,6 +237,8 @@ function randomise(teams, selectedMode) {
             return randomiseTeamWeaponByTier(teams, xTierLax)
         case mode.CLASS:
             return randomiseTeamWeaponByTier(teams, weaponClassTier)
+        case mode.CUSTOM:
+            return randomiseByCustomRule(teams, customTier, details) // todo: validation
         case mode.WILD:
             return randomiseTeamWeapon(teams)
     }
@@ -177,8 +263,10 @@ export default {
     randomise,
     randomiseStage,
     randomiseMode,
+    getWeapon,
     xTierLax,
     xTierStrict,
     weaponClassTier,
+    customTier,
     mode
 }
