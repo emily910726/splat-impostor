@@ -221,12 +221,13 @@ function randomisePlayerWeaponByCustomRule(players, tiers, details) {
     const members = [...Object.keys(players), null, null, null, null].slice(0, 4)
     if (members.length <= 0) return []
 
+    const randomisedDetails = details.split('').sort((a, b) => 0.5 - Math.random())
     return members.map((playerId, i) => {
         if (!playerId) {
             return null
         }
 
-        const selectedTier = tiers[details[i]]
+        const selectedTier = tiers[randomisedDetails[i]]
         const weaponId = selectedTier.weapons[Math.floor(Math.random() * selectedTier.weapons.length)]
         
         return {
