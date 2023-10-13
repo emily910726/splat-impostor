@@ -58,6 +58,24 @@ function joinRoom(message, commands) {
     })
 }
 
+function checkRoom(message, commands){
+    getRoom(message.channelId, [roomStore.status.CREATED, roomStore.status.STARTED], (room) => {
+message.reply(`
+### Team A
+${Object.entries(room.teams.left).map(([playerId, player]) => {
+    return `- ${player.name}`
+}).join('\n')}
+### Team B
+${Object.entries(room.teams.right).map(([playerId, player]) => {
+    return `- ${player.name}`
+}).join('\n')}`)
+    }, (room) => {
+        message.reply(`The room has ${room.status}`)
+    }, () => {
+        message.reply(`Please !create a room first`)
+    })
+}
+
 function startRoom(message, commands, client) {
     getRoom(message.channelId, [roomStore.status.CREATED], async (room) => {
         let mode = roomStore.mode.IMPOSTOR
@@ -283,6 +301,7 @@ export default {
     joinRoom,
     startRoom,
     endRoom,
+    checkRoom,
     quickStart,
     test,
 }

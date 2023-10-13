@@ -12,6 +12,9 @@ function route(message, commands, client) {
             case 'join':
                 roomService.joinRoom(message, rest)
                 break
+            case 'check':
+                roomService.checkRoom(message, rest)
+                break
             case 'start':
                 roomService.startRoom(message, rest, client)
                 break

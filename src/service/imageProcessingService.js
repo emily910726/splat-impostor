@@ -3,6 +3,7 @@ import Sharp from 'sharp'
 
 const BG_COLOR = ['#89FBED', '#FA89F3', '#FAE389']
 const FG_COLOR = '#99552E'
+const TEXT_COLOR = '#ffffff'
 
 function getBackground(width, height, opacity = 0, fill = BG_COLOR[0]) {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}"><rect x="0" y="0" width="${width}" height="${height}" fill="${fill}" fill-opacity="${opacity}"/></svg>`
@@ -16,10 +17,10 @@ async function getWeaponImage(path, side) {
         .toBuffer()
 }
 
-function getPlayerName(text) {
+function getText(text, color) {
     return {
         text: { 
-            text: `<span background="#00FF0001" foreground="${FG_COLOR}">${text}</span>`,
+            text: `<span background="#00FF0001" foreground="${color}">${text}</span>`,
             width: 144,
             height: 16,
             rgba: true
@@ -52,7 +53,7 @@ export default {
                         { input: await getPanelComposite(playerWeaponList[idx].weapon), top: verticalSpacing, left: horizontalSpacing + 32 }
                     )
                     panels.push(
-                        { input: getPlayerName(playerWeaponList[idx].player.name), top: verticalSpacing + 64, left: horizontalSpacing + 32 }
+                        { input: getText(playerWeaponList[idx].player.name, FG_COLOR), top: verticalSpacing + 64, left: horizontalSpacing + 32 }
                     )
                 }
             }
@@ -81,12 +82,12 @@ export default {
         let bgIdx = 0
         let height = 0
         let panels = [{
-            input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: 0, left: sidePanelWidth
+            input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: 0, left: 0
         }]
         let offsetY = 0
         for (let subTier of tier) {
             let offsetX = sidePanelWidth
-            panels.push({ input: getPlayerName(subTier.description), top: offsetY + 8, left:0 })
+            panels.push({ input: getText(subTier.description, TEXT_COLOR), top: offsetY + 8, left:8 })
             for (let weapon of subTier.weapons) {
                 panels.push(
                     { input: await getWeaponImage(weapon.weaponImagePath, side), top: offsetY, left: offsetX }
@@ -96,7 +97,7 @@ export default {
                     offsetX = sidePanelWidth
                     offsetY += side
                     panels.push({
-                        input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: offsetY, left: sidePanelWidth
+                        input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: offsetY, left: 0
                     })
                 }
             }
@@ -104,7 +105,7 @@ export default {
             if (offsetX > sidePanelWidth) {
                 offsetY += side
                 panels.push({
-                    input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: offsetY, left: sidePanelWidth
+                    input: await getBackground(width, side, opacity, BG_COLOR[bgIdx]), top: offsetY, left: 0
                 })
             }
             height = offsetY
